@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>測試便利商店裡的你，究竟是哪種隱藏人格？｜POCKET STORE DEMO</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      font-family: 'Noto Sans TC', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      box-sizing: border-box;
+    }
+    body {
+      background: radial-gradient(circle at 50% 20%, #1d3557 0%, #090d16 100%);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+    }
+
+    /* Custom Animations */
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(3deg); }
+    }
+    @keyframes floatReverse {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(7px) rotate(-4deg); }
+    }
+    @keyframes characterBreathe {
+      0%, 100% { transform: translateY(0px) scaleY(1); }
+      50% { transform: translateY(-4px) scaleY(1.02); }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 18px rgba(56, 189, 248, 0.45), inset 0 0 10px rgba(56, 189, 248, 0.25); }
+      50% { box-shadow: 0 0 28px rgba(168, 85, 247, 0.7), inset 0 0 15px rgba(168, 85, 247, 0.35); }
+    }
+    @keyframes sparkleSpin {
+      0% { transform: rotate(0deg) scale(0.95); opacity: 0.7; }
+      50% { transform: rotate(180deg) scale(1.1); opacity: 1; }
+      100% { transform: rotate(360deg) scale(0.95); opacity: 0.7; }
+    }
+    @keyframes chaseClock {
+      0%, 100% { transform: translate(0px, 0px) rotate(-12deg) scale(1); }
+      50% { transform: translate(6px, -5px) rotate(14deg) scale(1.08); }
+    }
+    @keyframes speedDash {
+      0% { transform: translateX(6px); opacity: 0.3; }
+      50% { transform: translateX(-4px); opacity: 1; }
+      100% { transform: translateX(6px); opacity: 0.3; }
+    }
+    @keyframes roadMove {
+      0% { background-position: 0 0; }
+      100% { background-position: -48px 0; }
+    }
+
+    .anim-float-1 { animation: floatSlow 3.2s ease-in-out infinite; }
+    .anim-float-2 { animation: floatReverse 3.6s ease-in-out infinite; }
+    .anim-char { animation: characterBreathe 2.6s ease-in-out infinite; }
+    .anim-chase { animation: chaseClock 1.4s ease-in-out infinite; }
+    .anim-speed { animation: speedDash 1s ease-in-out infinite; }
+    .neon-card-glow { animation: pulseGlow 4s ease-in-out infinite; }
+    .sparkle-spin { animation: sparkleSpin 8s linear infinite; }
+
+    .road-dashes {
+      background-image: linear-gradient(to right, #facc15 55%, transparent 45%);
+      background-size: 24px 4px;
+      background-repeat: repeat-x;
+      animation: roadMove 1.4s linear infinite;
+    }
+
+    /* Hide scrollbar for clean mobile container */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Result Card Starry Diamond Background */
+    .result-bg-cosmos {
+      background:
+        radial-gradient(circle at 20% 18%, rgba(139, 92, 246, 0.38) 0%, transparent 42%),
+        radial-gradient(circle at 82% 25%, rgba(56, 189, 248, 0.32) 0%, transparent 45%),
+        radial-gradient(circle at 50% 52%, rgba(236, 72, 153, 0.32) 0%, transparent 50%),
+        linear-gradient(180deg, #0b1026 0%, #161d42 48%, #090e24 100%);
+    }
+    .result-bg-co-create {
+      background:
+        radial-gradient(circle at 20% 18%, rgba(245, 158, 11, 0.42) 0%, transparent 45%),
+        radial-gradient(circle at 82% 25%, rgba(236, 72, 153, 0.42) 0%, transparent 45%),
+        radial-gradient(circle at 50% 52%, rgba(56, 189, 248, 0.38) 0%, transparent 52%),
+        linear-gradient(180deg, #160d30 0%, #24154b 48%, #0d122b 100%);
+    }
+  </style>
+</head>
+<body class="py-2 sm:py-4">
+
+  <!-- Top DEMO Quick Presentation Bar (For Boss Demo) -->
+  <div class="w-full max-w-[430px] px-2 mb-2 z-50">
+    <div class="bg-slate-900/90 backdrop-blur-md border border-sky-400/30 rounded-full px-2 py-1.5 flex items-center justify-between gap-1 shadow-lg">
+      <span class="text-[10px] font-bold text-amber-400 pl-2 shrink-0 flex items-center gap-1">
+        <i data-lucide="presentation" class="w-3 h-3"></i> DEMO導覽
+      </span>
+      <div class="flex items-center gap-1 overflow-x-auto no-scrollbar">
+        <button onclick="demoJump('home')" id="nav-home" class="demo-nav-btn text-[11px] px-2 py-0.5 rounded-full font-medium transition whitespace-nowrap bg-sky-500 text-white">①首頁</button>
+        <button onclick="demoJump('quiz')" id="nav-quiz" class="demo-nav-btn text-[11px] px-2 py-0.5 rounded-full font-medium transition whitespace-nowrap text-slate-300 hover:bg-slate-800">②測驗</button>
+        <button onclick="demoJump('resultA')" id="nav-resultA" class="demo-nav-btn text-[11px] px-2 py-0.5 rounded-full font-medium transition whitespace-nowrap text-slate-300 hover:bg-slate-800">③結果(圖A)</button>
+        <button onclick="demoJump('friend')" id="nav-friend" class="demo-nav-btn text-[11px] px-2 py-0.5 rounded-full font-medium transition whitespace-nowrap text-slate-300 hover:bg-slate-800">④朋友盲選</button>
+        <button onclick="demoJump('resultB')" id="nav-resultB" class="demo-nav-btn text-[11px] px-2 py-0.5 rounded-full font-medium transition whitespace-nowrap text-slate-300 hover:bg-slate-800">⑤共創(圖B)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile 9:16 Frame Container -->
+  <div id="phone-shell" class="relative w-full max-w-[430px] h-[calc(100vh-58px)] sm:h-[780px] max-h-[820px] bg-gradient-to-b from-[#0B132B] via-[#14213D] to-[#1D3557] sm:rounded-[36px] sm:border-[6px] sm:border-slate-800/90 shadow-[0_25px_70px_rgba(0,0,0,0.75)] overflow-hidden flex flex-col">
+
+    <!-- ==================== SCREEN 1: HOME ==================== -->
+    <section id="screen-home" class="flex-1 flex flex-col justify-between p-5 overflow-y-auto no-scrollbar relative">
+      <!-- Ambient Stars -->
+      <div class="absolute inset-0 pointer-events-none overflow-hidden">
+        <div class="w-1.5 h-1.5 bg-sky-300 rounded-full absolute top-12 left-10 opacity-70 animate-ping"></div>
+        <div class="w-1 h-1 bg-amber-300 rounded-full absolute top-28 right-12 opacity-80"></div>
+        <div class="w-2 h-2 bg-purple-400 rounded-full absolute top-1/3 left-6 opacity-50"></div>
+      </div>
+
+      <!-- Top Store Floating Island Illustration -->
+      <div class="relative mt-1 rounded-3xl bg-gradient-to-b from-[#2b5876]/60 to-[#14213D]/80 border border-sky-300/25 p-4 shadow-inner overflow-hidden">
+        <!-- Floating Cute Clouds & Blocks -->
+        <div class="flex justify-between items-center text-xs text-sky-200/80 mb-1">
+          <span class="px-2.5 py-0.5 rounded-full bg-sky-500/20 border border-sky-400/30 text-[11px] font-bold tracking-wider">24H OPEN</span>
+          <span class="text-[11px] text-amber-300 flex items-center gap-1"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i> POCKET STORE</span>
+        </div>
+
+        <!-- Isometric Mini Store SVG Illustration -->
+        <div class="relative h-48 flex items-center justify-center">
+          <span class="text-2xl absolute top-2 left-5 anim-float-1 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]">💛</span>
+          <span class="text-2xl absolute top-4 right-6 anim-float-2 drop-shadow-[0_0_10px_rgba(56,189,248,0.8)]">🎈</span>
+          <span class="text-xl absolute bottom-6 left-4 anim-float-2">🍙</span>
+          <span class="text-xl absolute bottom-5 right-5 anim-float-1">☕</span>
+
+          <svg viewBox="0 0 260 200" class="w-60 h-44 drop-shadow-[0_14px_20px_rgba(0,0,0,0.5)] anim-char">
+            <!-- Floating Island Base -->
+            <polygon points="130,175 40,130 130,85 220,130" fill="#3b82f6" opacity="0.35"/>
+            <polygon points="130,165 50,125 130,85 210,125" fill="#60a5fa"/>
+            <polygon points="50,125 130,165 130,182 50,142" fill="#1d4ed8"/>
+            <polygon points="210,125 130,165 130,182 210,142" fill="#1e40af"/>
+            <!-- Store Building -->
+            <polygon points="130,135 72,106 72,56 130,85" fill="#e0f2fe"/>
+            <polygon points="130,135 188,106 188,56 130,85" fill="#bae6fd"/>
+            <!-- Store Roof -->
+            <polygon points="130,88 66,56 130,24 194,56" fill="#38bdf8"/>
+            <polygon points="130,82 76,55 130,28 184,55" fill="#0284c7"/>
+            <!-- Store Stripes -->
+            <polygon points="72,64 130,93 130,101 72,72" fill="#f97316"/>
+            <polygon points="188,64 130,93 130,101 188,72" fill="#22c55e"/>
+            <!-- Welcome Sign -->
+            <rect x="106" y="42" width="48" height="16" rx="6" fill="#fef08a" stroke="#f59e0b" stroke-width="2"/>
+            <text x="130" y="53" text-anchor="middle" font-size="8.5" font-weight="900" fill="#92400e">WELCOME</text>
+            <!-- Cute Chibi Clerk in Front -->
+            <circle cx="130" cy="122" r="14" fill="#fed7aa"/>
+            <path d="M115,120 Q130,102 145,120" fill="#fb7185"/>
+            <circle cx="125" cy="122" r="2" fill="#1e293b"/>
+            <circle cx="135" cy="122" r="2" fill="#1e293b"/>
+            <path d="M127,127 Q130,130 133,127" stroke="#1e293b" stroke-width="1.5" fill="none"/>
+            <rect x="121" y="135" width="18" height="16" rx="6" fill="#38bdf8"/>
+          </svg>
+        </div>
+
+        <!-- POCKET STORE 3D Style Logo Badge -->
+        <div class="text-center -mt-3 relative z-10">
+          <div class="inline-block px-5 py-1.5 rounded-2xl bg-gradient-to-b from-sky-400 to-blue-600 border-2 border-white shadow-[0_6px_0_#1e3a8a]">
+            <div class="text-xl font-black tracking-wider text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.4)] leading-none">POCKET</div>
+            <div class="text-lg font-black tracking-widest text-amber-200 drop-shadow-[0_2px_2px_rgba(0,0,0,0.4)] leading-tight">STORE</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Copywriting Section -->
+      <div class="text-center px-2 my-3 space-y-2.5">
+        <h1 class="text-[22px] font-black text-amber-300 leading-snug tracking-wide drop-shadow">
+          測試便利商店裡的你，<br/>究竟是哪種隱藏人格？
+        </h1>
+        <p class="text-xs font-medium text-sky-200">
+          深夜的公路長途，便利商店的燈正為你亮著
+        </p>
+        <div class="bg-white/10 backdrop-blur-sm border border-sky-300/20 rounded-2xl p-3">
+          <p class="text-[12.5px] leading-relaxed text-slate-100 font-medium">
+            16段旅途微光，只需要3分鐘，傾聽心理的5種真實聲音，解鎖你靈魂深處的隱藏人格
+          </p>
+        </div>
+      </div>
+
+      <!-- Start CTA -->
+      <div class="pb-1">
+        <button onclick="startQuiz()" class="w-full py-3.5 rounded-full bg-gradient-to-r from-indigo-500 via-sky-500 to-cyan-400 hover:brightness-110 active:scale-[0.98] transition text-white font-black text-base tracking-wider shadow-[0_8px_25px_rgba(56,189,248,0.45)] flex items-center justify-center gap-2">
+          <span>開始測驗</span>
+          <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== SCREEN 2: QUIZ (Q1~Q16) ==================== -->
+    <section id="screen-quiz" class="hidden flex-1 flex flex-col justify-between p-4 overflow-y-auto no-scrollbar">
+      <!-- Top Progress & Chapter Header -->
+      <div>
+        <div class="flex items-center justify-between text-xs mb-1.5">
+          <span id="quiz-progress-text" class="font-black text-sky-300 tracking-wider">Q1 / 16</span>
+          <span id="quiz-chapter-text" class="font-bold text-amber-300/90">行前準備與公路出發</span>
+        </div>
+        <div class="w-full h-2 bg-slate-800/90 rounded-full overflow-hidden border border-slate-700/70">
+          <div id="quiz-progress-bar" class="h-full bg-gradient-to-r from-teal-300 via-sky-400 to-indigo-400 rounded-full transition-all duration-300" style="width: 6.25%;"></div>
+        </div>
+      </div>
+
+      <!-- Animated Character & Floating Emoji Stage (Matches Fig 3 & Fig 4) -->
+      <div class="my-2.5 rounded-2xl bg-[#092338] border border-sky-400/30 p-3 relative overflow-hidden shadow-inner">
+        <div class="h-36 relative flex items-center justify-center">
+          <!-- Left Glowing Emoji -->
+          <div id="stage-emoji-left" class="absolute left-6 top-5 text-4xl anim-float-1 drop-shadow-[0_0_16px_rgba(250,204,21,0.85)] select-none">
+            📋
+          </div>
+
+          <!-- Center Cute Chibi Convenience Store Clerk SVG -->
+          <div id="stage-character" class="relative z-10 anim-char">
+            <svg viewBox="0 0 140 150" class="w-28 h-32 drop-shadow-[0_10px_12px_rgba(0,0,0,0.5)]">
+              <!-- Hair Back -->
+              <path d="M35,55 Q30,92 48,96 L92,96 Q110,92 105,55 Z" fill="#e05a47"/>
+              <!-- Body / Blue Uniform -->
+              <path d="M48,92 L92,92 L98,128 L42,128 Z" fill="#4aa3df"/>
+              <path d="M44,122 L96,122 L98,128 L42,128 Z" fill="#facc15"/>
+              <!-- Collar & Name Tag -->
+              <polygon points="70,92 58,92 64,102" fill="#facc15"/>
+              <polygon points="70,92 82,92 76,102" fill="#facc15"/>
+              <rect x="63" y="104" width="14" height="8" rx="2" fill="#ffffff"/>
+              <!-- Arms -->
+              <path d="M48,95 Q36,106 44,114" stroke="#fed7aa" stroke-width="7" stroke-linecap="round" fill="none"/>
+              <path d="M92,95 Q104,106 96,114" stroke="#fed7aa" stroke-width="7" stroke-linecap="round" fill="none"/>
+              <!-- Legs & Red Shoes -->
+              <rect x="56" y="128" width="8" height="12" fill="#fed7aa"/>
+              <rect x="76" y="128" width="8" height="12" fill="#fed7aa"/>
+              <ellipse cx="58" cy="141" rx="9" ry="5" fill="#dc2626"/>
+              <ellipse cx="82" cy="141" rx="9" ry="5" fill="#dc2626"/>
+              <!-- Head -->
+              <circle cx="70" cy="62" r="28" fill="#fed7aa"/>
+              <!-- Hair Bangs -->
+              <path d="M40,60 Q42,26 70,26 Q98,26 100,60 Q88,48 70,52 Q52,48 40,60 Z" fill="#f06449"/>
+              <!-- Cute Eyes & Blush -->
+              <circle cx="58" cy="64" r="4" fill="#4a2c2a"/>
+              <circle cx="82" cy="64" r="4" fill="#4a2c2a"/>
+              <circle cx="56.5" cy="62.5" r="1.3" fill="#ffffff"/>
+              <circle cx="80.5" cy="62.5" r="1.3" fill="#ffffff"/>
+              <ellipse cx="51" cy="70" rx="4.5" ry="2.5" fill="#fda4af" opacity="0.8"/>
+              <ellipse cx="89" cy="70" rx="4.5" ry="2.5" fill="#fda4af" opacity="0.8"/>
+              <!-- Smile -->
+              <path d="M66,72 Q70,76 74,72" stroke="#4a2c2a" stroke-width="2" stroke-linecap="round" fill="none"/>
+            </svg>
+          </div>
+
+          <!-- Right Glowing Emoji -->
+          <div id="stage-emoji-right" class="absolute right-6 bottom-5 text-4xl anim-float-2 drop-shadow-[0_0_16px_rgba(56,189,248,0.85)] select-none">
+            🧳
+          </div>
+        </div>
+        <!-- Yellow Road Dashes -->
+        <div class="w-full h-1 road-dashes opacity-90 mt-1"></div>
+      </div>
+
+      <!-- Question Text -->
+      <div class="mb-2">
+        <div id="quiz-type-badge" class="inline-block text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30 mb-1.5">
+          單選題
+        </div>
+        <h2 id="quiz-question-text" class="text-[16px] font-bold text-white leading-snug">
+          出發前，我會嚴格列好行李與景點清單，並確認路線符合計畫。
+        </h2>
+      </div>
+
+      <!-- Options Area (Dynamic: Single Choice OR Ranking Q11~Q16) -->
+      <div id="quiz-options-container" class="flex-1 flex flex-col justify-center space-y-2 my-1">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Bottom Utility Bar -->
+      <div class="pt-1 flex items-center justify-between text-xs text-slate-400">
+        <button id="btn-prev-q" onclick="prevQuestion()" class="px-2.5 py-1.5 rounded-lg hover:bg-white/10 disabled:opacity-30 flex items-center gap-1">
+          <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i> 上一題
+        </button>
+        <button onclick="quickFinishDemo()" class="px-2.5 py-1.5 rounded-lg text-amber-300/80 hover:text-amber-300 underline underline-offset-2">
+          演示快捷：直接看結果 ➔
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== SCREEN 3: RESULT (IMAGE A & IMAGE B) ==================== -->
+    <section id="screen-result" class="hidden flex-1 flex flex-col justify-between p-3.5 overflow-y-auto no-scrollbar">
+
+      <!-- Waiting Friend Status Banner (Shown after clicking Invite Friend) -->
+      <div id="co-create-status-banner" class="hidden mb-2 rounded-xl bg-amber-500/20 border border-amber-400/50 px-3 py-2 flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+          <span class="text-xs font-bold text-amber-200">【朋友共創中】等待好友定義...</span>
+        </div>
+        <button onclick="switchToFriendScreen()" class="px-2.5 py-1 rounded-lg bg-amber-400 text-slate-950 font-black text-[11px] hover:bg-amber-300 transition shrink-0 shadow">
+          模擬朋友點開連結 ➔
+        </button>
+      </div>
+
+      <!-- THE RESULT ART CARD (100% Styled Like 人間客服中心.jpg) -->
+      <div id="capture-card" class="relative rounded-[24px] result-bg-cosmos border-2 border-sky-400/40 p-3.5 shadow-[0_12px_35px_rgba(0,0,0,0.65)] overflow-hidden text-white select-none">
+        <!-- Decorative Crystal Shards -->
+        <div class="absolute top-3 right-3 w-20 h-20 bg-purple-500/20 blur-xl rounded-full pointer-events-none"></div>
+        <div class="absolute bottom-14 left-2 w-24 h-24 bg-sky-400/20 blur-xl rounded-full pointer-events-none"></div>
+
+        <!-- Co-Creation Badge (Only visible on Image B) -->
+        <div id="card-friend-badge" class="hidden mb-2 flex items-center justify-between bg-gradient-to-r from-amber-500/90 via-pink-500/90 to-purple-600/90 px-3 py-1 rounded-full border border-white/50 shadow-lg">
+          <span class="text-[11px] font-black tracking-wider text-white flex items-center gap-1">
+            ✨ 【朋友眼中的你】AI 共創限定版
+          </span>
+          <span id="card-friend-tags-mini" class="text-[10px] font-bold bg-black/30 px-2 py-0.5 rounded-full text-amber-200">
+            #遲到大王
+          </span>
+        </div>
+
+        <!-- Top Row: Neon Title Box + Pentagon Radar Chart -->
+        <div class="grid grid-cols-12 gap-2 items-center relative z-10">
+          <!-- Left: Crown + Neon Title + Double Capsule Tags -->
+          <div class="col-span-7 flex flex-col items-center">
+            <div class="text-amber-400 text-base -mb-1.5 drop-shadow-[0_0_8px_rgba(251,191,36,0.9)]">👑</div>
+            <div class="w-full rounded-2xl bg-[#111936]/85 border-2 border-purple-400/70 shadow-[0_0_15px_rgba(168,85,247,0.5)] px-2.5 py-2 text-center relative">
+              <div class="flex items-center justify-between text-sky-300 text-xs mb-0.5 opacity-80">
+                <span>🎧</span>
+                <span class="text-[9px] tracking-widest text-purple-200 font-bold">HIDDEN PERSONA</span>
+                <span>🎧</span>
+              </div>
+              <h2 id="res-role-title" class="text-[20px] font-black leading-tight bg-gradient-to-b from-white via-sky-100 to-purple-200 bg-clip-text text-transparent drop-shadow">
+                人間客服中心
+              </h2>
+            </div>
+            <!-- Double Pill Tags -->
+            <div class="flex flex-wrap justify-center gap-1.5 mt-2">
+              <span id="res-tag-1" class="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-rose-500 to-pink-600 text-[10.5px] font-bold shadow border border-white/30">
+                #有問必答
+              </span>
+              <span id="res-tag-2" class="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 text-[10.5px] font-bold shadow border border-white/30">
+                #超會接話
+              </span>
+            </div>
+          </div>
+
+          <!-- Right: Glowing Pentagon Radar Chart -->
+          <div class="col-span-5 flex flex-col items-center justify-center bg-[#0d1430]/70 rounded-2xl border border-sky-400/25 p-1.5">
+            <svg id="res-radar-svg" viewBox="0 0 140 130" class="w-full h-28 overflow-visible">
+              <!-- Radar Web Background -->
+              <polygon points="70,22 112,52 96,102 44,102 28,52" fill="rgba(56,189,248,0.08)" stroke="rgba(148,163,184,0.35)" stroke-width="1"/>
+              <polygon points="70,38 97,58 87,90 53,90 43,58" fill="none" stroke="rgba(148,163,184,0.25)" stroke-width="0.8"/>
+              <line x1="70" y1="64" x2="70" y2="22" stroke="rgba(148,163,184,0.25)" stroke-width="0.8"/>
+              <line x1="70" y1="64" x2="112" y2="52" stroke="rgba(148,163,184,0.25)" stroke-width="0.8"/>
+              <line x1="70" y1="64" x2="96" y2="102" stroke="rgba(148,163,184,0.25)" stroke-width="0.8"/>
+              <line x1="70" y1="64" x2="44" y2="102" stroke="rgba(148,163,184,0.25)" stroke-width="0.8"/>
+              <line x1="70" y1="64" x2="28" y2="52" stroke="rgba(148,163,184,0.25)" stroke-width="0.8"/>
+              <!-- Data Polygon -->
+              <defs>
+                <linearGradient id="radarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#ec4899" stop-opacity="0.75"/>
+                  <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.75"/>
+                </linearGradient>
+              </defs>
+              <polygon id="radar-data-poly" points="70,30 102,55 92,98 48,94 32,53" fill="url(#radarGrad)" stroke="#7dd3fc" stroke-width="1.8"/>
+              <!-- Labels -->
+              <text x="70" y="10" text-anchor="middle" font-size="8.5" fill="#e2e8f0" font-weight="700">執行力</text>
+              <text id="val-exec" x="70" y="19" text-anchor="middle" font-size="8" fill="#7dd3fc" font-weight="900">80</text>
+
+              <text x="126" y="48" text-anchor="middle" font-size="8.5" fill="#e2e8f0" font-weight="700">效率</text>
+              <text id="val-eff" x="126" y="57" text-anchor="middle" font-size="8" fill="#7dd3fc" font-weight="900">75</text>
+
+              <text x="102" y="114" text-anchor="middle" font-size="8.5" fill="#e2e8f0" font-weight="700">互動</text>
+              <text id="val-int" x="102" y="123" text-anchor="middle" font-size="8" fill="#7dd3fc" font-weight="900">90</text>
+
+              <text x="38" y="114" text-anchor="middle" font-size="8.5" fill="#e2e8f0" font-weight="700">創意</text>
+              <text id="val-cre" x="38" y="123" text-anchor="middle" font-size="8" fill="#7dd3fc" font-weight="900">70</text>
+
+              <text x="14" y="48" text-anchor="middle" font-size="8.5" fill="#e2e8f0" font-weight="700">專注</text>
+              <text id="val-foc" x="14" y="57" text-anchor="middle" font-size="8" fill="#7dd3fc" font-weight="900">90</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Center Character Showcase + 3 Orbiting Glowing Badges (or Friend AI Stickers on Image B) -->
+        <div class="relative h-40 my-1 flex items-center justify-center">
+          <!-- Glowing Aura Ring -->
+          <div id="res-aura-ring" class="w-32 h-32 rounded-full bg-gradient-to-tr from-purple-500/30 via-pink-400/25 to-sky-400/30 border border-white/25 shadow-[0_0_30px_rgba(236,72,153,0.45)] flex items-center justify-center"></div>
+
+          <!-- Left Orbiting Icon 1 -->
+          <div class="absolute left-4 top-2 flex flex-col items-center anim-float-1">
+            <div id="res-orb-1-icon" class="w-9 h-9 rounded-full bg-purple-900/80 border border-purple-300/60 flex items-center justify-center text-base shadow-[0_0_12px_rgba(192,132,252,0.7)]">☕</div>
+            <span id="res-orb-1-text" class="text-[10px] font-bold text-purple-100 mt-0.5 drop-shadow">暖心咖啡</span>
+          </div>
+
+          <!-- Left Orbiting Icon 2 -->
+          <div class="absolute left-3 bottom-3 flex flex-col items-center anim-float-2">
+            <div id="res-orb-2-icon" class="w-9 h-9 rounded-full bg-indigo-900/80 border border-indigo-300/60 flex items-center justify-center text-base shadow-[0_0_12px_rgba(129,140,248,0.7)]">❓</div>
+            <span id="res-orb-2-text" class="text-[10px] font-bold text-indigo-100 mt-0.5 drop-shadow">疑難排解</span>
+          </div>
+
+          <!-- Center 3D Stylized Character Avatar -->
+          <div id="res-character-art" class="absolute z-10 anim-char flex flex-col items-center">
+            <!-- Dynamically populated SVG matching persona & friend AI fusion -->
+          </div>
+
+          <!-- Right Orbiting Icon 3 -->
+          <div class="absolute right-4 top-7 flex flex-col items-center anim-float-1">
+            <div id="res-orb-3-icon" class="w-10 h-10 rounded-full bg-sky-900/80 border border-sky-300/60 flex items-center justify-center text-lg shadow-[0_0_14px_rgba(56,189,248,0.8)]">💬</div>
+            <span id="res-orb-3-text" class="text-[10px] font-bold text-sky-100 mt-0.5 drop-shadow">溫柔陪伴</span>
+          </div>
+
+          <!-- Friend AI Fusion Sticker Overlay (Only shown on Image B) -->
+          <div id="friend-fusion-stickers" class="hidden absolute inset-0 pointer-events-none z-20">
+            <!-- Populated dynamically when Image B is active -->
+          </div>
+        </div>
+
+        <!-- Quote & Trait Glass Box (Text NEVER changes between Image A and Image B) -->
+        <div class="rounded-2xl bg-[#0b132b]/75 backdrop-blur-md border border-purple-400/35 p-2.5 mb-2 relative z-10">
+          <p id="res-quote" class="text-[13px] font-black text-white leading-snug mb-1">
+            「一杯咖啡，順道附贈解決三個問題。」
+          </p>
+          <p id="res-trait" class="text-[11px] text-slate-300 leading-relaxed">
+            在照顧需求與分析之外，補足規範意識與主動突破的特質。
+          </p>
+        </div>
+
+        <!-- Best Match & Complementary Partners -->
+        <div class="grid grid-cols-2 gap-2 mb-2 relative z-10">
+          <div class="rounded-xl bg-[#101938]/85 border border-pink-400/30 p-2">
+            <div class="text-[10px] font-bold text-pink-300 flex items-center gap-1 mb-1">
+              <span>💗</span> 速配夥伴
+            </div>
+            <div class="flex items-center gap-2 bg-white/5 rounded-lg px-2 py-1">
+              <span id="res-partner-good-emoji" class="text-lg">🐶</span>
+              <span id="res-partner-good-name" class="text-xs font-bold text-white truncate">熱食區巡邏隊長</span>
+            </div>
+          </div>
+          <div class="rounded-xl bg-[#101938]/85 border border-sky-400/30 p-2">
+            <div class="text-[10px] font-bold text-sky-300 flex items-center gap-1 mb-1">
+              <span>🧩</span> 互補夥伴
+            </div>
+            <div class="flex items-center gap-2 bg-white/5 rounded-lg px-2 py-1">
+              <span id="res-partner-comp-emoji" class="text-lg">🐰</span>
+              <span id="res-partner-comp-name" class="text-xs font-bold text-white truncate">窗邊放空結界師</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Button Inside Card: See More Store Partners -->
+        <button onclick="openGalleryModal()" class="w-full py-2 rounded-full bg-gradient-to-r from-blue-600/90 via-indigo-600/90 to-blue-600/90 hover:brightness-110 border border-sky-300/40 text-xs font-bold text-white flex items-center justify-center gap-1.5 shadow relative z-10">
+          <i data-lucide="users" class="w-3.5 h-3.5 text-sky-200"></i>
+          <span>看更多超商夥伴</span>
+          <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+
+      <!-- Horizontal Thumbnail Switcher (Appears once at least 1 Friend Co-Creation Image B exists) -->
+      <div id="thumbnail-switcher-bar" class="hidden mt-2.5 bg-slate-900/80 border border-slate-700/70 rounded-2xl p-2">
+        <div class="flex items-center justify-between text-[10px] text-slate-300 px-1 mb-1.5">
+          <span class="font-bold text-amber-300">切換檢視圖卡（點擊縮圖預覽）</span>
+          <span id="thumb-count-label">共 2 張</span>
+        </div>
+        <div id="thumbnail-list" class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-0.5">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Bottom Action Buttons (NO 1, 2, 3 Numbers!) -->
+      <div id="result-action-buttons" class="mt-2.5 grid grid-cols-3 gap-2">
+        <!-- Dynamically rendered based on Mode A, Mode B, or Reverted-to-A -->
+      </div>
+    </section>
+
+    <!-- ==================== SCREEN 4: FRIEND BLIND CO-CREATION (3x3 GRID) ==================== -->
+    <section id="screen-friend" class="hidden flex-1 flex flex-col justify-between p-4 overflow-y-auto no-scrollbar">
+      <!-- Top Blind Mission Header -->
+      <div class="text-center pt-1">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-xs font-black mb-2">
+          <i data-lucide="eye-off" class="w-3.5 h-3.5"></i> 好友盲選模式（已隱藏測驗原圖）
+        </div>
+        <h2 class="text-xl font-black text-white tracking-wide">
+          朋友隱藏任務
+        </h2>
+        <p class="text-xs text-sky-200 mt-1">
+          選擇你朋友的反差人格（最多可選 3 項）
+        </p>
+        <div class="mt-2 inline-block px-3 py-0.5 rounded-full bg-slate-800/90 border border-sky-400/30 text-xs font-bold text-sky-300">
+          已選擇 <span id="friend-selected-count" class="text-amber-300 text-sm">0</span> / 3 項
+        </div>
+      </div>
+
+      <!-- 3x3 Grid of 9 Contrasting Personas -->
+      <div id="friend-grid" class="grid grid-cols-3 gap-2.5 my-3">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Bottom Confirm CTA -->
+      <div class="space-y-2 pb-1">
+        <button id="btn-friend-submit" onclick="submitFriendCoCreate()" disabled class="w-full py-3.5 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-pink-500 disabled:from-slate-700 disabled:to-slate-700 disabled:text-slate-400 text-white font-black text-sm tracking-wider shadow-lg transition active:scale-[0.98] flex items-center justify-center gap-2">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+          <span>確認送出</span>
+        </button>
+        <button onclick="demoJump('resultA')" class="w-full py-1.5 text-xs text-slate-400 hover:text-white transition">
+          返回玩家結果頁
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== OVERLAY 1: AI FUSION LOADING ==================== -->
+    <div id="overlay-ai-loading" class="hidden absolute inset-0 z-40 bg-[#090e24]/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center">
+      <div class="relative w-24 h-24 mb-5 flex items-center justify-center">
+        <div class="absolute inset-0 rounded-full border-4 border-t-amber-400 border-r-pink-500 border-b-sky-400 border-l-purple-500 animate-spin"></div>
+        <span class="text-4xl animate-bounce">🪄</span>
+      </div>
+      <h3 class="text-lg font-black text-white mb-1.5">AI 正在融合原有人格與朋友視角...</h3>
+      <p id="ai-loading-tags" class="text-xs text-amber-300 font-bold mb-3">正在注入：#遲到大王 #超級大食怪</p>
+      <p class="text-[11px] text-slate-400">保留原始性格解析，重塑專屬「朋友眼中的你」圖卡</p>
+    </div>
+
+    <!-- ==================== OVERLAY 2: RAFFLE POPUP (跳抽獎視窗) ==================== -->
+    <div id="modal-raffle" class="hidden absolute inset-0 z-40 bg-black/80 backdrop-blur-sm flex items-center justify-center p-5">
+      <div class="w-full rounded-3xl bg-gradient-to-b from-[#1a294c] to-[#0f172a] border-2 border-amber-400/60 p-5 text-center shadow-[0_0_40px_rgba(245,158,11,0.35)] relative">
+        <button onclick="closeRaffleModal()" class="absolute top-3 right-3 w-7 h-7 rounded-full bg-white/10 text-slate-300 flex items-center justify-center hover:bg-white/20">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+
+        <div class="inline-block px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-[11px] font-black mb-2">
+          🎉 分享轉發成功！解鎖抽獎資格
+        </div>
+        <h3 class="text-lg font-black text-white leading-snug mb-1">
+          立即前往中繼頁登記抽大獎！
+        </h3>
+        <p class="text-xs text-slate-300 mb-3">
+          回到預熱中繼頁第 2 頁，即可登記抽 Switch 2、降噪耳機與限量超商虛寶！
+        </p>
+
+        <!-- Mini Prize Showcase -->
+        <div class="grid grid-cols-3 gap-2 mb-4">
+          <div class="rounded-xl bg-white/5 border border-white/10 p-2">
+            <div class="text-2xl mb-1">🎮</div>
+            <div class="text-[10px] font-bold text-amber-300">Switch 2</div>
+          </div>
+          <div class="rounded-xl bg-white/5 border border-white/10 p-2">
+            <div class="text-2xl mb-1">🎧</div>
+            <div class="text-[10px] font-bold text-sky-300">降噪耳機</div>
+          </div>
+          <div class="rounded-xl bg-white/5 border border-white/10 p-2">
+            <div class="text-2xl mb-1">🎁</div>
+            <div class="text-[10px] font-bold text-pink-300">限定虛寶</div>
+          </div>
+        </div>
+
+        <button onclick="goToRelayRaffle()" class="w-full py-3.5 rounded-full bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 text-slate-950 font-black text-sm tracking-wide shadow-[0_6px_20px_rgba(245,158,11,0.5)] hover:brightness-110 active:scale-[0.98] transition">
+          【前往中繼頁抽獎】
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== OVERLAY 3: 10 STORE PARTNERS GALLERY ==================== -->
+    <div id="modal-gallery" class="hidden absolute inset-0 z-40 bg-[#0b132b]/95 backdrop-blur-md flex flex-col p-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-700">
+        <h3 class="text-base font-black text-white flex items-center gap-1.5">
+          <span>🏪</span> 10 大超商隱藏人格圖鑑
+        </h3>
+        <button onclick="closeGalleryModal()" class="px-2.5 py-1 rounded-full bg-white/10 text-xs text-slate-200 hover:bg-white/20">
+          關閉 ✕
+        </button>
+      </div>
+      <p class="text-[11px] text-sky-300 my-2">點擊任一角色可直接在 DEMO 中預覽該角色結果卡：</p>
+      <div id="gallery-list" class="flex-1 overflow-y-auto no-scrollbar space-y-2 pr-0.5">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast-box" class="hidden absolute bottom-16 left-1/2 -translate-x-1/2 z-50 bg-slate-900/95 border border-sky-400/50 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-2xl whitespace-nowrap flex items-center gap-1.5">
+      <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+      <span id="toast-msg">操作成功</span>
+    </div>
+
+  </div>
+
+  <script>
+    // ==================== 1. DATA DEFINITIONS (VERSION 6) ====================
+    const CHAPTER_NAMES = {
+      part1: "行前準備與公路出發",
+      part2: "超商補給與突發狀況",
+      part3: "旅途關鍵抉擇",
+      part4: "旅途總結時刻"
+    };
+
+    const QUESTIONS = [
+      // Q1~Q10 Single Choice
+      { id: 1, type: 'single', chapter: CHAPTER_NAMES.part1, sound: 'principle', emojis: ['📋', '🧳'], text: '出發前，我會嚴格列好行李與景點清單，並確認路線符合計畫。' },
+      { id: 2, type: 'single', chapter: CHAPTER_NAMES.part1, sound: 'care', emojis: ['☂️', '🎁'], text: '和夥伴旅行時，我習慣多準備隨身藥品、雨具或備用小禮物。' },
+      { id: 3, type: 'single', chapter: CHAPTER_NAMES.part1, sound: 'logic', emojis: ['🏷️', '🪙'], text: '出發前，我會先比較各家休息站或超商的優惠活動與點數回饋。' },
+      { id: 4, type: 'single', chapter: CHAPTER_NAMES.part1, sound: 'freedom', emojis: ['🧭', '🗺️'], text: '我喜歡沒固定行程的旅行，看到有趣路牌隨時開進去探險。' },
+      { id: 5, type: 'single', chapter: CHAPTER_NAMES.part1, sound: 'safety', emojis: ['🏪', '🛡️'], text: '補給時，我傾向選擇自己熟悉、常見的大牌子超商較心安。' },
+      { id: 6, type: 'single', chapter: CHAPTER_NAMES.part2, sound: 'principle', emojis: ['🧾', '💰'], text: '超商找錢金額不對，即使只差幾塊錢我也會回頭釐清。' },
+      { id: 7, type: 'single', chapter: CHAPTER_NAMES.part2, sound: 'care', emojis: ['🖥️', '🤝'], text: '看到有人不太會操作店內機台，我會主動上前關心是否需要幫忙。' },
+      { id: 8, type: 'single', chapter: CHAPTER_NAMES.part2, sound: 'logic', emojis: ['⚠️', '🔍'], text: '機台故障時，我會先仔細確認螢幕錯誤訊息再決定下一步。' },
+      { id: 9, type: 'single', chapter: CHAPTER_NAMES.part2, sound: 'freedom', emojis: ['✨', '🍿'], text: '看到限定新品或土產零食，即使不知評價我也想衝一波。' },
+      { id: 10, type: 'single', chapter: CHAPTER_NAMES.part2, sound: 'safety', emojis: ['🛒', '🥤'], text: '看到促銷即使自己沒有很想要，也會順便買來和同伴分享備用。' },
+
+      // Q11~Q15 Ranking (+2, +1, 0, -1, -2)
+      {
+        id: 11, type: 'rank', chapter: CHAPTER_NAMES.part3, emojis: ['👕', '👟'],
+        text: '【出發穿搭】清晨準備出發去旅行，你會怎麼決定今天的穿著？',
+        options: [
+          { code: 'A', sound: 'logic', label: '依氣溫降雨精準搭配' },
+          { code: 'B', sound: 'safety', label: '穿習慣的保守款' },
+          { code: 'C', sound: 'principle', label: '符合場合的專業裝備' },
+          { code: 'D', sound: 'care', label: '穿得親切隨和好親近' },
+          { code: 'E', sound: 'freedom', label: '挑最亮眼好看的穿' }
+        ]
+      },
+      {
+        id: 12, type: 'rank', chapter: CHAPTER_NAMES.part3, emojis: ['🍙', '🧃'],
+        text: '【糧食補給】走進公路超商，同伴對車上零食意見分歧遲無共識，你會？',
+        options: [
+          { code: 'A', sound: 'principle', label: '催促結帳別再拖延' },
+          { code: 'B', sound: 'care', label: '統整大家都愛的清單' },
+          { code: 'C', sound: 'logic', label: '精算選出最高 CP 值' },
+          { code: 'D', sound: 'freedom', label: '拿想吃的結帳自己吃' },
+          { code: 'E', sound: 'safety', label: '等大家挑完買基本款' }
+        ]
+      },
+      {
+        id: 13, type: 'rank', chapter: CHAPTER_NAMES.part3, emojis: ['💳', '💬'],
+        text: '【結帳風波】結帳被誤會插隊，店員澄清誤會後，你會？',
+        options: [
+          { code: 'A', sound: 'principle', label: '據理力爭要求道歉' },
+          { code: 'B', sound: 'care', label: '體諒對方不予計較' },
+          { code: 'C', sound: 'logic', label: '毫無情緒拿了就走' },
+          { code: 'D', sound: 'freedom', label: '超掃興找同伴吐槽' },
+          { code: 'E', sound: 'safety', label: '委屈怕衝突默默走開' }
+        ]
+      },
+      {
+        id: 14, type: 'rank', chapter: CHAPTER_NAMES.part3, emojis: ['⏰', '🚌'],
+        text: '【行程延誤】預約好的導覽人員遲到了半小時才出現，你會？',
+        options: [
+          { code: 'A', sound: 'principle', label: '嚴肅提醒守時原則' },
+          { code: 'B', sound: 'care', label: '遞水關心對方狀況' },
+          { code: 'C', sound: 'logic', label: '重算動線避免延誤' },
+          { code: 'D', sound: 'freedom', label: '趁空檔四處逛找秘境' },
+          { code: 'E', sound: 'safety', label: '順著大家默默配合' }
+        ]
+      },
+      {
+        id: 15, type: 'rank', chapter: CHAPTER_NAMES.part3, emojis: ['💻', '☕'],
+        text: '【旅途求助】回程同伴接到公司急件請託你幫忙，你會？',
+        options: [
+          { code: 'A', sound: 'principle', label: '明確分工把事搞定' },
+          { code: 'B', sound: 'care', label: '安撫情緒陪同解決' },
+          { code: 'C', sound: 'logic', label: '評估狀態能幫才接' },
+          { code: 'D', sound: 'freedom', label: '看心情想幫就隨手幫' },
+          { code: 'E', sound: 'safety', label: '怕壞氣氛硬著頭皮幫' }
+        ]
+      },
+
+      // Q16 Tie-breaker (No points added)
+      {
+        id: 16, type: 'tie', chapter: CHAPTER_NAMES.part4, emojis: ['👯', '💭'],
+        text: '【旅途總結】若熟識朋友吐槽你在旅行中的個性，最可能說哪一點？',
+        options: [
+          { code: 'A', sound: 'principle', label: '「講原則像巡邏隊長。」' },
+          { code: 'B', sound: 'care', label: '「忍不住替別人瞎操心。」' },
+          { code: 'C', sound: 'logic', label: '「買東西都要算 CP 值。」' },
+          { code: 'D', sound: 'freedom', label: '「常臨時起意改行程。」' },
+          { code: 'E', sound: 'safety', label: '「只會說都好不敢表達。」' }
+        ]
+      }
+    ];
+
+    const PERSONAS = {
+      'care+logic': {
+        id: 'care+logic',
+        name: '人間客服中心',
+        quote: '「一杯咖啡，順道附贈解決三個問題。」',
+        trait: '在照顧需求與分析之外，補足規範意識與主動突破的特質。',
+        tags: ['#有問必答', '#超會接話'],
+        orbs: [{ icon: '☕', text: '暖心咖啡' }, { icon: '❓', text: '疑難排解' }, { icon: '💬', text: '溫柔陪伴' }],
+        radar: { exec: 80, eff: 75, int: 90, cre: 70, foc: 90 },
+        goodPartner: { emoji: '🐶', name: '熱食區巡邏隊長' },
+        compPartner: { emoji: '🐰', name: '窗邊放空結界師' },
+        hairColor: '#facc15', dressColor: '#3b82f6', crown: true
+      },
+      'logic+principle': {
+        id: 'logic+principle',
+        name: '熱食區巡邏隊長',
+        quote: '「我可是在維護全人類的熱食品質啊！」',
+        trait: '在規矩與標準之外，更注重客觀資訊與數據、彈性與現場應變的能力。',
+        tags: ['#原則滿點', '#數據控'],
+        orbs: [{ icon: '🌭', text: '熱食把關' }, { icon: '📏', text: '精準標準' }, { icon: '🔥', text: '現場應變' }],
+        radar: { exec: 95, eff: 90, int: 65, cre: 70, foc: 92 },
+        goodPartner: { emoji: '🧚', name: '人間客服中心' },
+        compPartner: { emoji: '🐰', name: '窗邊放空結界師' },
+        hairColor: '#fb7185', dressColor: '#ef4444', crown: true
+      },
+      'principle+safety': {
+        id: 'principle+safety',
+        name: '動線糾察大隊',
+        quote: '「就算人生沒有方向，結帳動線也必須完全人性化！」',
+        trait: '在規則與效率之外，提供人際關係的維持、有人情味的問候與活力。',
+        tags: ['#秩序守護', '#零失誤'],
+        orbs: [{ icon: '🚧', text: '完美動線' }, { icon: '⏱️', text: '秒速結帳' }, { icon: '🤝', text: '暖心問候' }],
+        radar: { exec: 92, eff: 88, int: 72, cre: 60, foc: 95 },
+        goodPartner: { emoji: '📦', name: '宇宙包裹管理員' },
+        compPartner: { emoji: '⚡', name: '突發事件吸鐵' },
+        hairColor: '#38bdf8', dressColor: '#1d4ed8', crown: false
+      },
+      'freedom+logic': {
+        id: 'freedom+logic',
+        name: '怪點子驗收官',
+        quote: '「新點子可以很瘋狂，但想進我的商店，還得先過我這一關！」',
+        trait: '能夠補足自信與創意爆棚的店長更多的人性分析、需求判斷與務實作法。',
+        tags: ['#腦洞實踐', '#邏輯鬼才'],
+        orbs: [{ icon: '💡', text: '狂想雷達' }, { icon: '🧪', text: '務實測試' }, { icon: '🚀', text: '創意落地' }],
+        radar: { exec: 78, eff: 85, int: 74, cre: 96, foc: 84 },
+        goodPartner: { emoji: '⚡', name: '突發事件吸鐵' },
+        compPartner: { emoji: '💝', name: '超商暖心補給站' },
+        hairColor: '#c084fc', dressColor: '#7e22ce', crown: true
+      },
+      'care+safety': {
+        id: 'care+safety',
+        name: '宇宙包裹管理員',
+        quote: '「包裹在右手邊第二排向下數第二個！」',
+        trait: '在流程規矩與配合之外，補足創意、關係與臨場變化。',
+        tags: ['#超級記憶', '#溫柔神隊友'],
+        orbs: [{ icon: '📦', text: '秒找包裹' }, { icon: '🧭', text: '精準定位' }, { icon: '💖', text: '貼心守護' }],
+        radar: { exec: 86, eff: 88, int: 85, cre: 68, foc: 94 },
+        goodPartner: { emoji: '🚧', name: '動線糾察大隊' },
+        compPartner: { emoji: '💡', name: '怪點子驗收官' },
+        hairColor: '#34d399', dressColor: '#059669', crown: false
+      },
+      'care+freedom': {
+        id: 'care+freedom',
+        name: '凌晨靈魂補給員',
+        quote: '「本來只想讓大家開心，最後連店員都忘了自己正在上班。」',
+        trait: '在熱情與創意之外，補足秩序、規劃與執行架構。',
+        tags: ['#氣氛製造', '#深夜暖流'],
+        orbs: [{ icon: '🌙', text: '深夜食堂' }, { icon: '🎉', text: '快樂感染' }, { icon: '🍜', text: '靈魂泡麵' }],
+        radar: { exec: 68, eff: 72, int: 96, cre: 92, foc: 70 },
+        goodPartner: { emoji: '💝', name: '超商暖心補給站' },
+        compPartner: { emoji: '📊', name: '隱形店長候選人' },
+        hairColor: '#fb923c', dressColor: '#ea580c', crown: false
+      },
+      'care+principle': {
+        id: 'care+principle',
+        name: '超商暖心補給站',
+        quote: '「總是記得別人需要什麼，唯獨忘記自己也需要休息。」',
+        trait: '在關係照顧與配合之外，能夠補足決策、規則與效率的面向。',
+        tags: ['#全能保母', '#外剛內柔'],
+        orbs: [{ icon: '🩹', text: '隨身藥箱' }, { icon: '🛡️', text: '原則守護' }, { icon: '🍵', text: '暖胃熱茶' }],
+        radar: { exec: 85, eff: 80, int: 92, cre: 72, foc: 86 },
+        goodPartner: { emoji: '🌙', name: '凌晨靈魂補給員' },
+        compPartner: { emoji: '💡', name: '怪點子驗收官' },
+        hairColor: '#f472b6', dressColor: '#db2777', crown: true
+      },
+      'freedom+principle': {
+        id: 'freedom+principle',
+        name: '突發事件吸鐵',
+        quote: '「麻煩？不不不，這只是一個還沒被命名的新玩法！」',
+        trait: '在創意與應變之外，補足價值觀建立、品質、原則與對人的關照。',
+        tags: ['#冒險基因', '#越亂越強'],
+        orbs: [{ icon: '⚡', text: '神級應變' }, { icon: '🎲', text: '驚喜玩法' }, { icon: '🧭', text: '底線堅持' }],
+        radar: { exec: 84, eff: 82, int: 86, cre: 95, foc: 76 },
+        goodPartner: { emoji: '💡', name: '怪點子驗收官' },
+        compPartner: { emoji: '🚧', name: '動線糾察大隊' },
+        hairColor: '#facc15', dressColor: '#d97706', crown: false
+      },
+      'logic+safety': {
+        id: 'logic+safety',
+        name: '隱形店長候選人',
+        quote: '「要請假？過來看看這三套班表哪套你可以。」',
+        trait: '在持續問題解決與配合執行之外，能夠提供團隊關懷與臨場應變能力。',
+        tags: ['#排班大師', '#冷靜軍師'],
+        orbs: [{ icon: '📊', text: '神級排班' }, { icon: '🧠', text: '冷靜拆彈' }, { icon: '⚙️', text: '穩定運作' }],
+        radar: { exec: 90, eff: 94, int: 70, cre: 74, foc: 92 },
+        goodPartner: { emoji: '🌭', name: '熱食區巡邏隊長' },
+        compPartner: { emoji: '🌙', name: '凌晨靈魂補給員' },
+        hairColor: '#94a3b8', dressColor: '#334155', crown: true
+      },
+      'freedom+safety': {
+        id: 'freedom+safety',
+        name: '窗邊放空結界師',
+        quote: '「等我，我在等宇宙連線。」',
+        trait: '在欣賞創意與真實需求之外，能夠協助建立秩序、規劃與執行架構。',
+        tags: ['#佛系結界', '#隨遇而安'],
+        orbs: [{ icon: '🛸', text: '宇宙連線' }, { icon: '☁️', text: '雲端漫遊' }, { icon: '🌿', text: '和平結界' }],
+        radar: { exec: 65, eff: 70, int: 78, cre: 90, foc: 72 },
+        goodPartner: { emoji: '📦', name: '宇宙包裹管理員' },
+        compPartner: { emoji: '🌭', name: '熱食區巡邏隊長' },
+        hairColor: '#a78bfa', dressColor: '#4f46e5', crown: false
+      }
+    };
+
+    const FRIEND_TRAITS = [
+      { id: 'sweet', emoji: '👼', label: '貼心好朋朋', sticker: '👼 天使光環' },
+      { id: 'late', emoji: '⏰', label: '遲到大王', sticker: '⏰ 永遠在路上' },
+      { id: 'surf', emoji: '🏄', label: '衝浪網速第一', sticker: '🏄 迷因第一線' },
+      { id: 'foodie', emoji: '🍜', label: '超級大食怪', sticker: '🍜 消夜無底洞' },
+      { id: 'indecisive', emoji: '🤯', label: '選擇障礙末期', sticker: '🤯 飲料櫃發呆王' },
+      { id: 'calculator', emoji: '🧮', label: '精打細算大師', sticker: '🧮 折扣精算師' },
+      { id: 'alien', emoji: '💡', label: '腦洞外星人', sticker: '💡 宇宙腦洞王' },
+      { id: 'zen', emoji: '🐢', label: '佛系隨緣派', sticker: '🐢 什麼都可以' },
+      { id: 'sober', emoji: '🧊', label: '人間清醒擔當', sticker: '🧊 吐槽分析師' }
+    ];
+
+    // ==================== 2. APPLICATION STATE ====================
+    let currentStep = 0; // 0..15 for Q1..Q16
+    let answers = {}; // { qId: value (number for single, array of sound strings for rank/tie) }
+    let currentPersonaKey = 'care+logic'; // Default 人間客服中心
+    let isWaitingFriend = false;
+    let friendSelectedIds = [];
+    let coCreations = []; // Array of { id, traits: [...], timestamp }
+    let activeViewMode = 'A'; // 'A' (initial), 'B' (viewing a co-created card), 'A_REVERTED' (clicked 選用原圖)
+    let activeCoCreateIndex = 0;
+
+    // ==================== 3. NAVIGATION & DEMO CONTROLS ====================
+    function showToast(msg) {
+      const box = document.getElementById('toast-box');
+      const txt = document.getElementById('toast-msg');
+      txt.textContent = msg;
+      box.classList.remove('hidden');
+      lucide.createIcons();
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => box.classList.add('hidden'), 2600);
+    }
+
+    function updateDemoNavHighlight(activeKey) {
+      document.querySelectorAll('.demo-nav-btn').forEach(btn => {
+        btn.classList.remove('bg-sky-500', 'text-white');
+        btn.classList.add('text-slate-300');
+      });
+      const target = document.getElementById('nav-' + activeKey);
+      if (target) {
+        target.classList.add('bg-sky-500', 'text-white');
+        target.classList.remove('text-slate-300');
+      }
+    }
+
+    function switchScreen(screenId) {
+      ['screen-home', 'screen-quiz', 'screen-result', 'screen-friend'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+      });
+      document.getElementById(screenId).classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function demoJump(target) {
+      if (target === 'home') {
+        switchScreen('screen-home');
+        updateDemoNavHighlight('home');
+      } else if (target === 'quiz') {
+        currentStep = 0;
+        renderQuestion();
+        switchScreen('screen-quiz');
+        updateDemoNavHighlight('quiz');
+      } else if (target === 'resultA') {
+        activeViewMode = 'A';
+        renderResultScreen();
+        switchScreen('screen-result');
+        updateDemoNavHighlight('resultA');
+      } else if (target === 'friend') {
+        switchToFriendScreen();
+      } else if (target === 'resultB') {
+        if (coCreations.length === 0) {
+          // Auto-create a sample co-creation featuring 超級大食怪 + 遲到大王 for instant demo jump
+          coCreations.push({
+            id: Date.now(),
+            traits: [FRIEND_TRAITS[3], FRIEND_TRAITS[1]]
+          });
+        }
+        activeCoCreateIndex = coCreations.length - 1;
+        activeViewMode = 'B';
+        isWaitingFriend = false;
+        renderResultScreen();
+        switchScreen('screen-result');
+        updateDemoNavHighlight('resultB');
+      }
+    }
+
+    // ==================== 4. QUIZ ENGINE (Q1~Q16) ====================
+    function startQuiz() {
+      currentStep = 0;
+      answers = {};
+      renderQuestion();
+      switchScreen('screen-quiz');
+      updateDemoNavHighlight('quiz');
+    }
+
+    function renderQuestion() {
+      const q = QUESTIONS[currentStep];
+      document.getElementById('quiz-progress-text').textContent = `Q${q.id} / 16`;
+      document.getElementById('quiz-chapter-text').textContent = q.chapter;
+      document.getElementById('quiz-progress-bar').style.width = `${(q.id / 16) * 100}%`;
+
+      // Stage Emojis Animation Refresh
+      const leftEl = document.getElementById('stage-emoji-left');
+      const rightEl = document.getElementById('stage-emoji-right');
+      leftEl.textContent = q.emojis[0];
+      rightEl.textContent = q.emojis[1];
+
+      // Badge & Question Text
+      const badge = document.getElementById('quiz-type-badge');
+      if (q.type === 'single') {
+        badge.textContent = '第一部分・單選題';
+      } else if (q.type === 'rank') {
+        badge.textContent = '第二部分・情境排序（依序點擊 1～5 名）';
+      } else {
+        badge.textContent = '第三部分・最終排序（依序點擊 1～5 名）';
+      }
+      document.getElementById('quiz-question-text').textContent = q.text;
+
+      const container = document.getElementById('quiz-options-container');
+      container.innerHTML = '';
+
+      if (q.type === 'single') {
+        const choices = [
+          { label: '是', score: 2 },
+          { label: '不一定', score: 1 },
+          { label: '否', score: 0 }
+        ];
+        choices.forEach(c => {
+          const isSelected = answers[q.id] === c.score;
+          const btn = document.createElement('button');
+          btn.className = `w-full py-3.5 px-4 rounded-2xl border text-center font-bold text-sm transition active:scale-[0.98] ${
+            isSelected
+              ? 'bg-sky-500/30 border-sky-400 text-white shadow-[0_0_15px_rgba(56,189,248,0.4)]'
+              : 'bg-slate-800/75 border-slate-600/60 text-slate-100 hover:bg-slate-700/80'
+          }`;
+          btn.textContent = c.label;
+          btn.onclick = () => {
+            answers[q.id] = c.score;
+            nextQuestion();
+          };
+          container.appendChild(btn);
+        });
+      } else {
+        // Ranking Question (Q11~Q16)
+        if (!Array.isArray(answers[q.id])) answers[q.id] = [];
+        const currentRanks = answers[q.id]; // array of option codes in rank order
+
+        q.options.forEach(opt => {
+          const rankIdx = currentRanks.indexOf(opt.code);
+          const isRanked = rankIdx !== -1;
+          const btn = document.createElement('button');
+          btn.className = `w-full py-2.5 px-3.5 rounded-xl border text-left text-xs font-bold transition flex items-center justify-between ${
+            isRanked
+              ? 'bg-indigo-600/40 border-amber-400 text-white shadow'
+              : 'bg-slate-800/75 border-slate-600/60 text-slate-200 hover:bg-slate-700/80'
+          }`;
+          btn.innerHTML = `
+            <span class="flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-white/10 text-[11px] flex items-center justify-center text-sky-300 font-black">${opt.code}</span>
+              <span>${opt.label}</span>
+            </span>
+            ${
+              isRanked
+                ? `<span class="px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 font-black text-[11px]">第 ${rankIdx + 1} 名</span>`
+                : `<span class="text-[10px] text-slate-400">點擊排序</span>`
+            }
+          `;
+          btn.onclick = () => {
+            if (isRanked) {
+              // Remove this and subsequent ranks so user can re-pick cleanly
+              answers[q.id] = currentRanks.filter(c => c !== opt.code);
+              renderQuestion();
+            } else {
+              currentRanks.push(opt.code);
+              renderQuestion();
+              if (currentRanks.length === 5) {
+                setTimeout(() => nextQuestion(), 320);
+              }
+            }
+          };
+          container.appendChild(btn);
+        });
+
+        // Reset Ranking Helper
+        if (currentRanks.length > 0) {
+          const resetBtn = document.createElement('button');
+          resetBtn.className = 'text-[11px] text-amber-300 underline text-right pt-0.5 self-end';
+          resetBtn.textContent = '↺ 重新排序本題';
+          resetBtn.onclick = () => {
+            answers[q.id] = [];
+            renderQuestion();
+          };
+          container.appendChild(resetBtn);
+        }
+      }
+
+      document.getElementById('btn-prev-q').disabled = currentStep === 0;
+    }
+
+    function prevQuestion() {
+      if (currentStep > 0) {
+        currentStep--;
+        renderQuestion();
+      }
+    }
+
+    function nextQuestion() {
+      if (currentStep < QUESTIONS.length - 1) {
+        currentStep++;
+        renderQuestion();
+      } else {
+        calculateResult();
+      }
+    }
+
+    function quickFinishDemo() {
+      currentPersonaKey = 'care+logic'; // 人間客服中心
+      activeViewMode = 'A';
+      isWaitingFriend = false;
+      renderResultScreen();
+      switchScreen('screen-result');
+      updateDemoNavHighlight('resultA');
+      showToast('已模擬完成 16 題測驗！');
+    }
+
+    function calculateResult() {
+      const scores = { principle: 0, care: 0, logic: 0, freedom: 0, safety: 0 };
+      const rankWeights = [2, 1, 0, -1, -2];
+
+      QUESTIONS.forEach(q => {
+        if (q.type === 'single') {
+          const val = typeof answers[q.id] === 'number' ? answers[q.id] : 1;
+          scores[q.sound] += val;
+        } else if (q.type === 'rank') {
+          const rankedCodes = Array.isArray(answers[q.id]) ? answers[q.id] : ['A', 'B', 'C', 'D', 'E'];
+          rankedCodes.forEach((code, idx) => {
+            const opt = q.options.find(o => o.code === code);
+            if (opt && idx < 5) scores[opt.sound] += rankWeights[idx];
+          });
+        }
+      });
+
+      // Q16 Tie-breaker order
+      const q16 = QUESTIONS[15];
+      const tieCodes = Array.isArray(answers[16]) && answers[16].length === 5 ? answers[16] : ['B', 'C', 'A', 'D', 'E'];
+      const tieOrder = tieCodes.map(code => q16.options.find(o => o.code === code).sound);
+
+      const sortedSounds = Object.keys(scores).sort((a, b) => {
+        if (scores[b] !== scores[a]) return scores[b] - scores[a];
+        return tieOrder.indexOf(a) - tieOrder.indexOf(b);
+      });
+
+      const topTwoKey = [sortedSounds[0], sortedSounds[1]].sort().join('+');
+      currentPersonaKey = PERSONAS[topTwoKey] ? topTwoKey : 'care+logic';
+
+      activeViewMode = 'A';
+      isWaitingFriend = false;
+      renderResultScreen();
+      switchScreen('screen-result');
+      updateDemoNavHighlight('resultA');
+    }
+
+    // ==================== 5. RESULT SCREEN RENDERER (IMAGE A & IMAGE B) ====================
+    function renderCharacterSVG(p, activeTraitIds = []) {
+      const hasFoodie = activeTraitIds.includes('foodie');
+      const hasLate = activeTraitIds.includes('late');
+      const hasSweet = activeTraitIds.includes('sweet');
+      const hasSurf = activeTraitIds.includes('surf');
+      const hasIndecisive = activeTraitIds.includes('indecisive');
+      const hasCalc = activeTraitIds.includes('calculator');
+      const hasAlien = activeTraitIds.includes('alien');
+      const hasZen = activeTraitIds.includes('zen');
+      const hasSober = activeTraitIds.includes('sober');
+      const isCoCreate = activeTraitIds.length > 0;
+
+      return `
+        <svg viewBox="0 0 210 165" class="w-48 h-40 drop-shadow-[0_12px_16px_rgba(0,0,0,0.65)] overflow-visible">
+          <defs>
+            <filter id="propGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="2.5" result="blur"/>
+              <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+
+          <!-- Co-create Aura Ring -->
+          ${isCoCreate ? `<circle cx="105" cy="85" r="64" fill="none" stroke="#facc15" stroke-width="2" stroke-dasharray="6 4" opacity="0.85"/>` : ''}
+
+          <!-- [PROP: 遲到大王] Chasing Giant Glowing Alarm Clocks & Speed Lines Behind Character -->
+          ${hasLate ? `
+            <g class="anim-speed">
+              <line x1="18" y1="55" x2="48" y2="55" stroke="#38bdf8" stroke-width="3" stroke-linecap="round"/>
+              <line x1="10" y1="75" x2="44" y2="75" stroke="#facc15" stroke-width="3.5" stroke-linecap="round"/>
+              <line x1="20" y1="95" x2="50" y2="95" stroke="#fb7185" stroke-width="3" stroke-linecap="round"/>
+              <line x1="15" y1="115" x2="46" y2="115" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
+            </g>
+            <g class="anim-chase" filter="url(#propGlow)">
+              <!-- Giant Chasing Alarm Clock Left -->
+              <circle cx="38" cy="64" r="19" fill="#ef4444" stroke="#fef08a" stroke-width="2.5"/>
+              <circle cx="38" cy="64" r="14" fill="#ffffff"/>
+              <line x1="38" y1="64" x2="38" y2="54" stroke="#1e293b" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="38" y1="64" x2="46" y2="67" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M22,47 Q28,40 34,46" stroke="#facc15" stroke-width="4" fill="none" stroke-linecap="round"/>
+              <path d="M42,46 Q48,40 54,47" stroke="#facc15" stroke-width="4" fill="none" stroke-linecap="round"/>
+              <!-- Secondary Floating Clock Right -->
+              <circle cx="174" cy="52" r="13" fill="#f97316" stroke="#fef08a" stroke-width="2"/>
+              <circle cx="174" cy="52" r="9.5" fill="#ffffff"/>
+              <line x1="174" y1="52" x2="174" y2="45" stroke="#1e293b" stroke-width="2" stroke-linecap="round"/>
+              <line x1="174" y1="52" x2="180" y2="52" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/>
+            </g>
+          ` : ''}
+
+          <!-- [PROP: 腦洞外星人] UFO & Orbiting Planet -->
+          ${hasAlien ? `
+            <g class="anim-float-1" filter="url(#propGlow)">
+              <ellipse cx="168" cy="36" rx="18" ry="6" fill="#a855f7" stroke="#e9d5ff" stroke-width="1.5"/>
+              <path d="M158,34 Q168,20 178,34 Z" fill="#38bdf8" opacity="0.85"/>
+              <polygon points="161,42 175,42 182,62 154,62" fill="rgba(56,189,248,0.28)"/>
+            </g>
+          ` : ''}
+
+          <!-- [PROP: 佛系隨緣派] Floating Zen Cloud & Lotus Aura -->
+          ${hasZen ? `
+            <g class="anim-float-2" filter="url(#propGlow)">
+              <ellipse cx="105" cy="154" rx="46" ry="9" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="1.5"/>
+              <text x="162" y="45" font-size="20">🍵</text>
+            </g>
+          ` : ''}
+
+          <!-- Base Chibi Character (Centered at x=105) -->
+          <!-- Back Hair -->
+          <path d="M67,60 Q59,110 81,117 L129,117 Q151,110 143,60 Z" fill="${p.hairColor}"/>
+          <!-- Uniform Dress -->
+          <path d="M83,99 L127,99 L134,137 L76,137 Z" fill="${p.dressColor}"/>
+          <path d="M78,130 L132,130 L134,137 L76,137 Z" fill="#facc15"/>
+          <!-- Collar & Badge -->
+          <polygon points="105,99 92,99 99,110" fill="#fb923c"/>
+          <polygon points="105,99 118,99 111,110" fill="#fb923c"/>
+          <rect x="110" y="111" width="13" height="7" rx="2" fill="#ffffff"/>
+
+          <!-- Arms (Pose changes if holding overflowing food!) -->
+          ${hasFoodie ? `
+            <path d="M83,103 Q68,112 85,118" stroke="#fed7aa" stroke-width="7.5" stroke-linecap="round" fill="none"/>
+            <path d="M127,103 Q142,112 125,118" stroke="#fed7aa" stroke-width="7.5" stroke-linecap="round" fill="none"/>
+          ` : `
+            <path d="M83,103 Q69,115 79,123" stroke="#fed7aa" stroke-width="7" stroke-linecap="round" fill="none"/>
+            <path d="M127,103 Q141,97 143,87" stroke="#fed7aa" stroke-width="7" stroke-linecap="round" fill="none"/>
+          `}
+
+          <!-- Legs & Shoes (Running pose if 遲到大王!) -->
+          ${hasLate ? `
+            <rect x="86" y="136" width="8" height="12" transform="rotate(22 86 136)" fill="#fed7aa"/>
+            <rect x="114" y="135" width="8" height="12" transform="rotate(-24 114 135)" fill="#fed7aa"/>
+            <ellipse cx="83" cy="148" rx="9" ry="5" fill="#ef4444"/>
+            <ellipse cx="123" cy="147" rx="9" ry="5" fill="#ef4444"/>
+          ` : `
+            <rect x="91" y="137" width="8" height="12" fill="#fed7aa"/>
+            <rect x="111" y="137" width="8" height="12" fill="#fed7aa"/>
+            <ellipse cx="93" cy="150" rx="9" ry="5" fill="#38bdf8"/>
+            <ellipse cx="117" cy="150" rx="9" ry="5" fill="#38bdf8"/>
+          `}
+
+          <!-- Head -->
+          <circle cx="105" cy="67" r="28" fill="#fed7aa"/>
+          <!-- Bangs & Tiara -->
+          <path d="M75,65 Q77,31 105,31 Q133,31 135,65 Q123,51 105,57 Q87,51 75,65 Z" fill="${p.hairColor}"/>
+          ${p.crown ? `<polygon points="91,39 105,27 119,39 113,43 97,43" fill="#fef08a" stroke="#f59e0b" stroke-width="1.5"/><circle cx="105" cy="36" r="3" fill="#ef4444"/>` : ''}
+
+          <!-- Cute Eyes & Blush -->
+          <circle cx="93" cy="69" r="4.5" fill="#0f766e"/>
+          <circle cx="117" cy="69" r="4.5" fill="#0f766e"/>
+          <circle cx="91.5" cy="67.5" r="1.5" fill="#ffffff"/>
+          <circle cx="115.5" cy="67.5" r="1.5" fill="#ffffff"/>
+          <ellipse cx="85" cy="76" rx="4.5" ry="2.5" fill="#fda4af" opacity="0.85"/>
+          <ellipse cx="125" cy="76" rx="4.5" ry="2.5" fill="#fda4af" opacity="0.85"/>
+
+          <!-- [PROP: 人間清醒擔當] Cool Deal-With-It / Cyber Sunglasses -->
+          ${hasSober ? `
+            <g filter="url(#propGlow)">
+              <rect x="82" y="63" width="20" height="11" rx="3" fill="#0f172a" stroke="#38bdf8" stroke-width="1.8"/>
+              <rect x="108" y="63" width="20" height="11" rx="3" fill="#0f172a" stroke="#38bdf8" stroke-width="1.8"/>
+              <line x1="102" y1="67" x2="108" y2="67" stroke="#38bdf8" stroke-width="2"/>
+              <line x1="86" y1="66" x2="92" y2="71" stroke="#7dd3fc" stroke-width="1.5"/>
+              <line x1="112" y1="66" x2="118" y2="71" stroke="#7dd3fc" stroke-width="1.5"/>
+            </g>
+          ` : ''}
+
+          <!-- Mouth (Happy open mouth if Foodie, panicked 'O' if Late, else smile) -->
+          ${hasFoodie ? `
+            <path d="M99,77 Q105,86 111,77 Z" fill="#fb7185" stroke="#7c2d12" stroke-width="1.5"/>
+          ` : hasLate ? `
+            <ellipse cx="105" cy="79" rx="3.5" ry="4.5" fill="#fb7185" stroke="#7c2d12" stroke-width="1.5"/>
+          ` : `
+            <path d="M100,77 Q105,82 110,77" stroke="#7c2d12" stroke-width="2" stroke-linecap="round" fill="none"/>
+          `}
+
+          <!-- [PROP: 超級大食怪] Overflowing Pile of Convenience Store Food Held in Arms! -->
+          ${hasFoodie ? `
+            <g filter="url(#propGlow)">
+              <!-- Burger -->
+              <path d="M74,106 Q86,95 98,106 Z" fill="#f59e0b" stroke="#78350f" stroke-width="1.2"/>
+              <rect x="73" y="106" width="26" height="4" rx="2" fill="#22c55e"/>
+              <rect x="74" y="110" width="24" height="4" rx="2" fill="#7c2d12"/>
+              <rect x="75" y="114" width="22" height="4" rx="2" fill="#fbbf24"/>
+              <!-- Onigiri Rice Ball -->
+              <polygon points="105,94 94,114 116,114" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+              <rect x="100" y="107" width="10" height="7" rx="1" fill="#1e293b"/>
+              <!-- Boba Milk Tea Cup -->
+              <polygon points="116,97 132,97 129,117 119,117" fill="#fde68a" stroke="#d97706" stroke-width="1.3"/>
+              <line x1="125" y1="89" x2="124" y2="104" stroke="#ec4899" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="122" cy="113" r="1.8" fill="#451a03"/>
+              <circle cx="126" cy="113" r="1.8" fill="#451a03"/>
+              <!-- Pink Frosted Donut & Fries -->
+              <circle cx="94" cy="121" r="9" fill="#f472b6" stroke="#db2777" stroke-width="1.5"/>
+              <circle cx="94" cy="121" r="3" fill="#fed7aa"/>
+              <rect x="107" y="116" width="18" height="12" rx="2" fill="#ef4444"/>
+              <rect x="109" y="109" width="3" height="8" fill="#facc15"/>
+              <rect x="114" y="107" width="3" height="10" fill="#facc15"/>
+              <rect x="119" y="109" width="3" height="8" fill="#facc15"/>
+            </g>
+          ` : ''}
+
+          <!-- [PROP: 貼心好朋朋] Floating Hearts & Care Kit -->
+          ${hasSweet ? `
+            <g class="anim-float-1" filter="url(#propGlow)">
+              <text x="52" y="118" font-size="20">🎁</text>
+              <text x="144" y="114" font-size="20">💖</text>
+              <text x="64" y="42" font-size="16">👼</text>
+            </g>
+          ` : ''}
+
+          <!-- [PROP: 衝浪網速第一] WiFi Signals & Smartphone -->
+          ${hasSurf ? `
+            <g class="anim-float-2" filter="url(#propGlow)">
+              <text x="146" y="108" font-size="22">📱</text>
+              <text x="50" y="54" font-size="19">📡</text>
+            </g>
+          ` : ''}
+
+          <!-- [PROP: 選擇障礙末期] Spinning Question Marks & Drinks -->
+          ${hasIndecisive ? `
+            <g class="anim-float-1" filter="url(#propGlow)">
+              <text x="56" y="46" font-size="20">❓</text>
+              <text x="142" y="46" font-size="20">❔</text>
+              <text x="148" y="118" font-size="19">🧃</text>
+            </g>
+          ` : ''}
+
+          <!-- [PROP: 精打細算大師] Glowing Calculator & Gold Coins -->
+          ${hasCalc ? `
+            <g class="anim-float-2" filter="url(#propGlow)">
+              <text x="50" y="115" font-size="21">🧮</text>
+              <text x="146" y="112" font-size="20">🪙</text>
+            </g>
+          ` : ''}
+        </svg>
+      `;
+    }
+
+    function renderResultScreen() {
+      const p = PERSONAS[currentPersonaKey];
+      const card = document.getElementById('capture-card');
+      const isModeB = activeViewMode === 'B' && coCreations[activeCoCreateIndex];
+
+      // Background & Badge Toggle (Image A vs Image B)
+      const friendBadge = document.getElementById('card-friend-badge');
+      const fusionStickers = document.getElementById('friend-fusion-stickers');
+      let activeTraitIds = [];
+
+      if (isModeB) {
+        const coData = coCreations[activeCoCreateIndex];
+        activeTraitIds = coData.traits.map(t => t.id);
+        card.classList.remove('result-bg-cosmos');
+        card.classList.add('result-bg-co-create');
+        friendBadge.classList.remove('hidden');
+        document.getElementById('card-friend-tags-mini').textContent = coData.traits.map(t => `#${t.label}`).join(' ');
+
+        // Render AI Fused Tag Pills at corners without blocking the new character props
+        fusionStickers.classList.remove('hidden');
+        const positions = [
+          'top-0 left-1/2 -translate-x-1/2',
+          'bottom-0 left-2',
+          'bottom-0 right-2'
+        ];
+        fusionStickers.innerHTML = coData.traits.map((t, idx) => `
+          <div class="absolute ${positions[idx]} px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-pink-500 text-slate-950 font-black text-[10px] shadow-[0_0_12px_rgba(250,204,21,0.9)] border border-white anim-float-${(idx % 2) + 1}">
+            ${t.sticker}
+          </div>
+        `).join('');
+      } else {
+        card.classList.add('result-bg-cosmos');
+        card.classList.remove('result-bg-co-create');
+        friendBadge.classList.add('hidden');
+        fusionStickers.classList.add('hidden');
+      }
+
+      // Persona Texts (NEVER altered by Image B)
+      document.getElementById('res-role-title').textContent = p.name;
+      document.getElementById('res-tag-1').textContent = p.tags[0];
+      document.getElementById('res-tag-2').textContent = p.tags[1];
+      document.getElementById('res-quote').textContent = p.quote;
+      document.getElementById('res-trait').textContent = p.trait;
+
+      // Orbiting Badges
+      document.getElementById('res-orb-1-icon').textContent = p.orbs[0].icon;
+      document.getElementById('res-orb-1-text').textContent = p.orbs[0].text;
+      document.getElementById('res-orb-2-icon').textContent = p.orbs[1].icon;
+      document.getElementById('res-orb-2-text').textContent = p.orbs[1].text;
+      document.getElementById('res-orb-3-icon').textContent = p.orbs[2].icon;
+      document.getElementById('res-orb-3-text').textContent = p.orbs[2].text;
+
+      // Partners
+      document.getElementById('res-partner-good-emoji').textContent = p.goodPartner.emoji;
+      document.getElementById('res-partner-good-name').textContent = p.goodPartner.name;
+      document.getElementById('res-partner-comp-emoji').textContent = p.compPartner.emoji;
+      document.getElementById('res-partner-comp-name').textContent = p.compPartner.name;
+
+      // Radar Values
+      document.getElementById('val-exec').textContent = p.radar.exec;
+      document.getElementById('val-eff').textContent = p.radar.eff;
+      document.getElementById('val-int').textContent = p.radar.int;
+      document.getElementById('val-cre').textContent = p.radar.cre;
+      document.getElementById('val-foc').textContent = p.radar.foc;
+
+      // Character SVG (Dynamically morphs props based on activeTraitIds!)
+      document.getElementById('res-character-art').innerHTML = renderCharacterSVG(p, activeTraitIds);
+
+      // Waiting Friend Banner
+      const waitBanner = document.getElementById('co-create-status-banner');
+      if (isWaitingFriend) {
+        waitBanner.classList.remove('hidden');
+      } else {
+        waitBanner.classList.add('hidden');
+      }
+
+      // Thumbnail Switcher Bar (Appears once coCreations.length > 0)
+      const thumbBar = document.getElementById('thumbnail-switcher-bar');
+      const thumbList = document.getElementById('thumbnail-list');
+      if (coCreations.length > 0) {
+        thumbBar.classList.remove('hidden');
+        document.getElementById('thumb-count-label').textContent = `共 ${coCreations.length + 1} 張圖卡`;
+        let thumbsHTML = '';
+
+        // Render newest Image B first
+        for (let i = coCreations.length - 1; i >= 0; i--) {
+          const item = coCreations[i];
+          const isSelected = activeViewMode === 'B' && activeCoCreateIndex === i;
+          thumbsHTML += `
+            <button onclick="selectCoCreateThumb(${i})" class="shrink-0 px-2.5 py-1.5 rounded-xl border text-left transition flex items-center gap-1.5 ${
+              isSelected
+                ? 'bg-amber-400/25 border-amber-400 text-amber-200 shadow'
+                : 'bg-slate-800/80 border-slate-600/60 text-slate-300 hover:bg-slate-700'
+            }">
+              <span class="text-sm">${item.traits[0].emoji}</span>
+              <div>
+                <div class="text-[10px] font-black leading-tight">朋友共創 #${i + 1}</div>
+                <div class="text-[9px] opacity-80">${item.traits.map(t => t.label).join('・')}</div>
+              </div>
+            </button>
+          `;
+        }
+
+        // Original Image A Thumb
+        const isOrigSelected = activeViewMode !== 'B';
+        thumbsHTML += `
+          <button onclick="selectOriginalThumb()" class="shrink-0 px-2.5 py-1.5 rounded-xl border text-left transition flex items-center gap-1.5 ${
+            isOrigSelected
+              ? 'bg-sky-500/25 border-sky-400 text-sky-200 shadow'
+              : 'bg-slate-800/80 border-slate-600/60 text-slate-300 hover:bg-slate-700'
+          }">
+            <span class="text-sm">🏪</span>
+            <div>
+              <div class="text-[10px] font-black leading-tight">原始結果圖(A)</div>
+              <div class="text-[9px] opacity-80">${p.name}</div>
+            </div>
+          </button>
+        `;
+        thumbList.innerHTML = thumbsHTML;
+      } else {
+        thumbBar.classList.add('hidden');
+      }
+
+      // Render Bottom Action Buttons (NO 1, 2, 3 Numbers!)
+      const btnContainer = document.getElementById('result-action-buttons');
+      if (activeViewMode === 'A') {
+        // Initial Result A: [邀請朋友解鎖隱藏人格] [結果下載] [分享轉發]
+        btnContainer.className = 'mt-2.5 grid grid-cols-12 gap-2';
+        btnContainer.innerHTML = `
+          <button onclick="handleInviteFriend()" class="col-span-5 py-3 px-2 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:brightness-110 active:scale-[0.98] transition text-slate-950 font-black text-[11.5px] leading-tight shadow-lg flex flex-col items-center justify-center text-center">
+            <span>邀請朋友</span>
+            <span>解鎖隱藏人格</span>
+          </button>
+          <button onclick="handleDownloadResult()" class="col-span-3 py-3 px-2 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-[0.98] transition border border-sky-400/40 text-white font-bold text-xs flex flex-col items-center justify-center gap-0.5">
+            <i data-lucide="download" class="w-4 h-4 text-sky-300"></i>
+            <span>結果下載</span>
+          </button>
+          <button onclick="handleShareForward()" class="col-span-4 py-3 px-2 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 hover:brightness-110 active:scale-[0.98] transition text-white font-black text-xs shadow-lg flex flex-col items-center justify-center gap-0.5">
+            <i data-lucide="share-2" class="w-4 h-4"></i>
+            <span>分享轉發</span>
+          </button>
+        `;
+      } else if (activeViewMode === 'B') {
+        // Co-Created Image B: [結果下載] [分享轉發] [選用原圖]
+        btnContainer.className = 'mt-2.5 grid grid-cols-3 gap-2';
+        btnContainer.innerHTML = `
+          <button onclick="handleDownloadResult()" class="py-3 px-2 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-[0.98] transition border border-sky-400/40 text-white font-bold text-xs flex flex-col items-center justify-center gap-0.5">
+            <i data-lucide="download" class="w-4 h-4 text-sky-300"></i>
+            <span>結果下載</span>
+          </button>
+          <button onclick="handleShareForward()" class="py-3 px-2 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 hover:brightness-110 active:scale-[0.98] transition text-slate-950 font-black text-xs shadow-lg flex flex-col items-center justify-center gap-0.5">
+            <i data-lucide="share-2" class="w-4 h-4"></i>
+            <span>分享轉發</span>
+          </button>
+          <button onclick="handleRevertToOriginal()" class="py-3 px-2 rounded-2xl bg-white/10 hover:bg-white/20 active:scale-[0.98] transition border border-white/25 text-slate-100 font-bold text-xs flex flex-col items-center justify-center gap-0.5">
+            <i data-lucide="rotate-ccw" class="w-4 h-4 text-amber-300"></i>
+            <span>選用原圖</span>
+          </button>
+        `;
+      } else {
+        // Reverted to Original A: [結果下載] [分享轉發] (plus subtle re-invite option)
+        btnContainer.className = 'mt-2.5 grid grid-cols-2 gap-2.5';
+        btnContainer.innerHTML = `
+          <button onclick="handleDownloadResult()" class="py-3 px-3 rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:scale-[0.98] transition border border-sky-400/40 text-white font-bold text-xs flex items-center justify-center gap-1.5">
+            <i data-lucide="download" class="w-4 h-4 text-sky-300"></i>
+            <span>結果下載</span>
+          </button>
+          <button onclick="handleShareForward()" class="py-3 px-3 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 hover:brightness-110 active:scale-[0.98] transition text-white font-black text-xs shadow-lg flex items-center justify-center gap-1.5">
+            <i data-lucide="share-2" class="w-4 h-4"></i>
+            <span>分享轉發</span>
+          </button>
+        `;
+      }
+      lucide.createIcons();
+    }
+
+    function selectCoCreateThumb(idx) {
+      activeCoCreateIndex = idx;
+      activeViewMode = 'B';
+      renderResultScreen();
+      updateDemoNavHighlight('resultB');
+    }
+
+    function selectOriginalThumb() {
+      activeViewMode = 'A_REVERTED';
+      renderResultScreen();
+      updateDemoNavHighlight('resultA');
+    }
+
+    function handleRevertToOriginal() {
+      activeViewMode = 'A_REVERTED';
+      renderResultScreen();
+      updateDemoNavHighlight('resultA');
+      showToast('已切換回原始結果圖(A)');
+    }
+
+    // ==================== 6. INVITE FRIEND & 3x3 BLIND MISSION ====================
+    function handleInviteFriend() {
+      isWaitingFriend = true;
+      renderResultScreen();
+      showToast('已複製共創連結！點擊上方「模擬朋友點開連結」體驗');
+    }
+
+    function switchToFriendScreen() {
+      friendSelectedIds = [];
+      renderFriendGrid();
+      switchScreen('screen-friend');
+      updateDemoNavHighlight('friend');
+    }
+
+    function renderFriendGrid() {
+      const grid = document.getElementById('friend-grid');
+      const countEl = document.getElementById('friend-selected-count');
+      const submitBtn = document.getElementById('btn-friend-submit');
+
+      countEl.textContent = friendSelectedIds.length;
+      submitBtn.disabled = friendSelectedIds.length === 0;
+
+      const isMaxReached = friendSelectedIds.length >= 3;
+
+      grid.innerHTML = FRIEND_TRAITS.map(t => {
+        const isSelected = friendSelectedIds.includes(t.id);
+        const isDisabled = !isSelected && isMaxReached;
+
+        return `
+          <button onclick="toggleFriendTrait('${t.id}')" ${isDisabled ? 'disabled' : ''} class="aspect-square rounded-2xl border p-2 flex flex-col items-center justify-center text-center transition relative ${
+            isSelected
+              ? 'bg-gradient-to-b from-amber-500/35 to-pink-500/35 border-amber-400 text-white shadow-[0_0_16px_rgba(251,191,36,0.5)] scale-[1.03]'
+              : isDisabled
+              ? 'bg-slate-900/40 border-slate-800 text-slate-600 opacity-45 cursor-not-allowed'
+              : 'bg-slate-800/80 border-sky-400/25 text-slate-100 hover:bg-slate-700/80 active:scale-95'
+          }">
+            ${isSelected ? `<span class="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black flex items-center justify-center">✓</span>` : ''}
+            <span class="text-2xl mb-1">${t.emoji}</span>
+            <span class="text-[11px] font-bold leading-tight">${t.label}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function toggleFriendTrait(id) {
+      if (friendSelectedIds.includes(id)) {
+        friendSelectedIds = friendSelectedIds.filter(item => item !== id);
+      } else if (friendSelectedIds.length < 3) {
+        friendSelectedIds.push(id);
+      }
+      renderFriendGrid();
+    }
+
+    function submitFriendCoCreate() {
+      if (friendSelectedIds.length === 0) return;
+
+      const selectedObjs = friendSelectedIds.map(id => FRIEND_TRAITS.find(t => t.id === id));
+      const loadingOverlay = document.getElementById('overlay-ai-loading');
+      document.getElementById('ai-loading-tags').textContent =
+        '正在注入：' + selectedObjs.map(t => `#${t.label}`).join(' ');
+
+      loadingOverlay.classList.remove('hidden');
+
+      setTimeout(() => {
+        loadingOverlay.classList.add('hidden');
+        coCreations.push({
+          id: Date.now(),
+          traits: selectedObjs
+        });
+        activeCoCreateIndex = coCreations.length - 1;
+        activeViewMode = 'B';
+        isWaitingFriend = false;
+
+        renderResultScreen();
+        switchScreen('screen-result');
+        updateDemoNavHighlight('resultB');
+        showToast('✨ AI 共創圖(B)已生成並更新至玩家畫面！');
+      }, 1400);
+    }
+
+    // ==================== 7. DOWNLOAD, SHARE & RAFFLE POPUP ====================
+    function handleDownloadResult() {
+      const target = document.getElementById('capture-card');
+      showToast('正在產生高畫質結果圖卡...');
+      if (window.html2canvas) {
+        html2canvas(target, { backgroundColor: '#0b1026', scale: 2, useCORS: true })
+          .then(canvas => {
+            const link = document.createElement('a');
+            const suffix = activeViewMode === 'B' ? '朋友共創版' : '隱藏人格原圖';
+            link.download = `POCKET_STORE_${PERSONAS[currentPersonaKey].name}_${suffix}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            showToast('圖片已成功下載！');
+          })
+          .catch(() => showToast('已模擬下載結果圖卡！'));
+      } else {
+        showToast('已模擬下載結果圖卡！');
+      }
+    }
+
+    function handleShareForward() {
+      // Trigger Raffle Popup immediately as specified in flowchart
+      document.getElementById('modal-raffle').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeRaffleModal() {
+      document.getElementById('modal-raffle').classList.add('hidden');
+    }
+
+    function goToRelayRaffle() {
+      closeRaffleModal();
+      showToast('🚀 已觸發導向【預熱中繼頁第 2 頁抽獎區】！');
+    }
+
+    // ==================== 8. 10 PERSONAS GALLERY MODAL ====================
+    function openGalleryModal() {
+      const list = document.getElementById('gallery-list');
+      list.innerHTML = Object.values(PERSONAS).map(p => `
+        <button onclick="previewPersonaFromGallery('${p.id}')" class="w-full rounded-2xl bg-slate-800/90 hover:bg-slate-700 border border-sky-400/25 p-3 text-left flex items-center justify-between gap-2 transition">
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-sm font-black text-amber-300">${p.name}</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300">${p.tags[0]}</span>
+            </div>
+            <p class="text-[11px] text-slate-300 mt-0.5 line-clamp-1">${p.quote}</p>
+          </div>
+          <span class="text-xs text-sky-300 font-bold shrink-0">預覽 ➔</span>
+        </button>
+      `).join('');
+      document.getElementById('modal-gallery').classList.remove('hidden');
+    }
+
+    function closeGalleryModal() {
+      document.getElementById('modal-gallery').classList.add('hidden');
+    }
+
+    function previewPersonaFromGallery(key) {
+      currentPersonaKey = key;
+      activeViewMode = 'A';
+      closeGalleryModal();
+      renderResultScreen();
+      showToast(`已切換預覽：${PERSONAS[key].name}`);
+    }
+
+    // Initialize Icons on Load
+    window.onload = () => {
+      lucide.createIcons();
+    };
+  </script>
+</body>
+</html>
